@@ -3,6 +3,10 @@
 namespace App\Http\Controllers\V1\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RegisterRequest;
+use App\Models\Master;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -17,28 +21,38 @@ class UserController extends Controller
         return response()->json(["okey"]);
     }
 
-    public function register(Request $request)
+    public function register(RegisterRequest $request)
     {
-        $data = $request->validate([
-            'name' => 'required|string',
-            'email' => 'required|string|email|unique:users',
-            'password' => 'required|string',
-        ]);
+        $data = $request->validated();
+        $role = Role::where('slug', $data['role'])->firstOrFail();
         $user = User::create([
-            'name' => $data['name'],
+            'first_name' => $data['first_name'],
+            'last_name' => $data['last_name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
+            'phone' => $data['phone'],
+            'role_id' => $role->id,
+            'status' => 'active',
         ]);
+        if ($data['role'] === 'master') {
+            Master::create([
+                'user_id' => $user->id,
+                'bio' => $data['bio'] ?? '',
+                'location' => $data['location'] ?? '',
+                'rating' => null,
+            ]);
+        }
         $token = $user->createToken('auth_token')->plainTextToken;
 
-        return response()->json(['token' => $token], 201);
+        return response()->json([
+            'token' => $token,
+            'user' => $user,
+        ], 201);
     }
-    public function login(Request $request)
+
+    public function login(LoginRequest $request)
     {
-        $data = $request->validate([
-            'email' => 'required|string|email',
-            'password' => 'required|string',
-        ]);
+        $data = $request->validated();
         $user = User::where('email', $data['email'])->first();
         if (!$user || !Hash::check($data['password'], $user->password)) {
             throw ValidationException::withMessages([
@@ -46,8 +60,12 @@ class UserController extends Controller
             ]);
         }
         $token = $user->createToken('auth_token')->plainTextToken;
-        return response()->json(['token' => $token]);
+        return response()->json([
+            'token' => $token,
+            'user' => $user,
+        ]);
     }
+
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
