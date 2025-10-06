@@ -42,7 +42,7 @@ class UserController extends Controller
         $user = User::where('email', $data['email'])->first();
         if (!$user || !Hash::check($data['password'], $user->password)) {
             throw ValidationException::withMessages([
-                'email' => ['The  provided credentials are incorrect.'],
+                'email' => ['The      provided credentials are incorrect.'],
             ]);
         }
         $token = $user->createToken('auth_token')->plainTextToken;
