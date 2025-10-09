@@ -9,7 +9,7 @@ class Schedule extends Model
     protected $table = 'schedules';
 
     protected $fillable = [
-        'master_id', 'date', 'start_time', 'end_time', 'is_available'
+        'master_id', 'date', 'start_time', 'end_time', 'is_available',
     ];
 
     protected $casts = [

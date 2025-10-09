@@ -21,7 +21,7 @@ class MasterResource extends JsonResource
             'location' => $this->location,
             'bio' => $this->bio,
             'service' => ServiceResource::collection($this->whenLoaded('services')),
-            'schedule' => ScheduleResource::collection($this->whenLoaded('schedules'))
+            'schedule' => ScheduleResource::collection($this->whenLoaded('schedules')),
         ];
     }
 }

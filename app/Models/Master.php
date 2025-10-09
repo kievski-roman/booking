@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Policies\MasterPolicy;
+use App\Policies\UserPolicy;
 use Illuminate\Database\Eloquent\Model;
 
 class Master extends Model
@@ -9,7 +11,7 @@ class Master extends Model
     protected $table = 'masters';
 
     protected $fillable = [
-        'user_id', 'bio', 'location', 'rating'
+        'user_id', 'bio', 'location', 'rating',
     ];
 
     protected $casts = [

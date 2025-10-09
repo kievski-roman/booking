@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('masters', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users');
-           $table->text('bio');
+            $table->text('bio');
             $table->string('location')->nullable();
-            $table->decimal('rating', 3,1)->nullable();
+            $table->decimal('rating', 3, 1)->nullable();
             $table->timestamps();
         });
     }

@@ -9,7 +9,7 @@ class Service extends Model
     protected $table = 'services';
 
     protected $fillable = [
-        'name', 'description', 'price', 'master_id'
+        'name', 'description', 'price', 'master_id',
     ];
 
     // Отношения

@@ -14,13 +14,12 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
-
 class UserController extends Controller
 {
     //
     public function index()
     {
-        return response()->json(["okey"]);
+        return response()->json(['okey']);
     }
 
     public function register(RegisterRequest $request)
@@ -56,15 +55,16 @@ class UserController extends Controller
     {
         $data = $request->validated();
         $user = User::where('email', $data['email'])->first();
-        if (!$user || !Hash::check($data['password'], $user->password)) {
+        if (! $user || ! Hash::check($data['password'], $user->password)) {
             throw ValidationException::withMessages([
                 'email' => ['The      provided credentials are incorrect.'],
             ]);
         }
         $token = $user->createToken('auth_token')->plainTextToken;
+
         return response()->json([
             'token' => $token,
-            'user' => new UserResource($user) ,
+            'user' => new UserResource($user),
         ]);
     }
 
@@ -72,7 +72,7 @@ class UserController extends Controller
     {
         Log::info('User', ['user' => $request->user()]);
         $request->user()->currentAccessToken()->delete();
+
         return response()->json(['message' => 'Logged out.']);
     }
-
 }

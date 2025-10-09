@@ -2,14 +2,17 @@
 
 namespace App\Models;
 
+use App\Policies\AppointmentPolicy;
+use App\Policies\UserPolicy;
 use Illuminate\Database\Eloquent\Model;
+
 
 class Appointment extends Model
 {
     protected $table = 'appointments';
 
     protected $fillable = [
-        'client_id', 'master_id', 'service_id', 'schedule_id', 'appointment_time', 'status', 'notes'
+        'client_id', 'master_id', 'service_id', 'schedule_id', 'appointment_time', 'status', 'notes',
     ];
 
     protected $casts = [
@@ -19,7 +22,7 @@ class Appointment extends Model
     // Отношения
     public function client()
     {
-        return $this->belongsTo(User::class, 'client_id');
+        return $this->belongsTo(User::class, 'role_id');
     }
 
     public function master()
