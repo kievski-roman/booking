@@ -4,6 +4,7 @@ namespace App\Http\Controllers\V1\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ServiceRequest;
+use App\Http\Resources\MasterResource;
 use App\Http\Resources\ServiceResource;
 use App\Models\Master;
 use App\Models\Service;
@@ -14,29 +15,20 @@ class MasterController extends Controller
 {
     //
 
-    public function index(Request $request)
+    public function index()
     {
-        $test = "fff";
+        $masters = Master::with('services')->paginate(10);
+
         return response()->json([
-            "okey" => $request->$test,
+            'masters' => MasterResource::collection($masters),
         ]);
     }
-    public function store(ServiceRequest $request, User $user)
+    public function show($id)
     {
-        $data = $request->validated();
-        $user = $request->user();
-        $master = Master::where('user_id', $user->id)->firstOrFail();
-
-        $service = Service::create([
-            "name" => $data['name'],
-            "description" => $data['description'],
-            "price" => $data['price'],
-            "master_id" => $master->id
-        ]);
+        $master = Master::with('services', 'schedules')->findOrFail($id);
         return response()->json([
-            "success" => true,
-            'service' => new ServiceResource($service),
+           new MasterResource($master),
         ]);
-
     }
+
 }

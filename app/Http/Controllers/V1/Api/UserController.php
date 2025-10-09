@@ -61,7 +61,9 @@ class UserController extends Controller
                 'email' => ['The      provided credentials are incorrect.'],
             ]);
         }
+        $token = $user->createToken('auth_token')->plainTextToken;
         return response()->json([
+            'token' => $token,
             'user' => new UserResource($user) ,
         ]);
     }
