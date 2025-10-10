@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 
+use App\Models\Service;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
@@ -13,15 +14,15 @@ class ServicePolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->role->slug === "master";
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, ServicePolicy $servicePolicy): bool
+    public function view(User $user, Service $service): bool
     {
-        return false;
+        return  $user->role->slug === "master" && $service->master_id === $user->master->id;
     }
 
     /**
@@ -29,29 +30,29 @@ class ServicePolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->role->slug === "master";
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, ServicePolicy $servicePolicy): bool
+    public function update(User $user, Service $service): bool
     {
-        return false;
+        return $user->role->slug === "master" && $service->master_id === $user->master->id;
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, ServicePolicy $servicePolicy): bool
+    public function delete(User $user, Service $service): bool
     {
-        return false;
+       return $user->role->slug === "master" && $service->master_id === $user->master->id;
     }
 
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, ServicePolicy $servicePolicy): bool
+    public function restore(User $user, Service $service): bool
     {
         return false;
     }
@@ -59,7 +60,7 @@ class ServicePolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, ServicePolicy $servicePolicy): bool
+    public function forceDelete(User $user, Service $service): bool
     {
         return false;
     }

@@ -16,6 +16,8 @@ class AppointmentResource extends JsonResource
     {
         return [
             'appointment' => [
+                'status' => $this->status,
+                'notes' => $this->notes,
                 'master' => new MasterResource($this->master),
                 'service' => new ServiceResource($this->service),
                 'schedule' => new ScheduleResource($this->schedule),

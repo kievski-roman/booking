@@ -11,11 +11,14 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('v1')->group(function () {
     Route::post('/register', [UserController::class, 'register'])->name('register');
     Route::post('/login', [UserController::class, 'login'])->name('login');
-    Route::get('/masters', [MasterController::class, 'index']); // Добавь для списка мастеров
-    Route::get('/masters/{master}', [MasterController::class, 'show']);
+
     Route::middleware('auth:sanctum')->group(callback: function () {
         Route::get('/profile', [ProfileController::class, 'show']);
         Route::post('/logout', [UserController::class, 'logout']);
+
+
+        Route::get('/masters', [MasterController::class, 'index']);
+        Route::get('/masters/{master}', [MasterController::class, 'show']);
 
         Route::post('/services', [ServiceController::class, 'store']);
         Route::put('/services/{service}', [ServiceController::class, 'update']);

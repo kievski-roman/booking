@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 
+use App\Models\Schedule;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
@@ -13,15 +14,15 @@ class SchedulePolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->role->slug === "master";
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, SchedulePolicy $schedulePolicy): bool
+    public function view(User $user, Schedule $schedule): bool
     {
-        return false;
+        return  $user->role->slug === "master" && $schedule->master_id === $user->master->id;
     }
 
     /**
@@ -29,29 +30,29 @@ class SchedulePolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->role->slug === "master";
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, SchedulePolicy $schedulePolicy): bool
+    public function update(User $user, Schedule $schedule): bool
     {
-        return false;
+        return $user->role->slug === "master" && $schedule->master_id === $user->master->id;
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, SchedulePolicy $schedulePolicy): bool
+    public function delete(User $user, Schedule $schedule): bool
     {
-        return false;
+        return $user->role->slug === "master" && $schedule->master_id === $user->master->id;
     }
 
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, SchedulePolicy $schedulePolicy): bool
+    public function restore(User $user, Schedule $schedule): bool
     {
         return false;
     }
@@ -59,7 +60,7 @@ class SchedulePolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, SchedulePolicy $schedulePolicy): bool
+    public function forceDelete(User $user, Schedule $schedule): bool
     {
         return false;
     }

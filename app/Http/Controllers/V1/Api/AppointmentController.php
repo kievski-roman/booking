@@ -19,6 +19,10 @@ class AppointmentController extends Controller
         return
             AppointmentResource::collection($appointments);
     }
+    public function show(Appointment $appointment)
+    {
+
+    }
 
     public function store(AppointmentRequest $request)
     {
@@ -49,12 +53,7 @@ class AppointmentController extends Controller
 
             return $appointment;
         });
-        return response()->json([
-            'id' => $appointment->id,
-            'status' => $appointment->status,
-            'info' => new AppointmentResource($appointment),
-            'notes' => $appointment->notes,
-        ], 201);
+        return new AppointmentResource($appointment);
 
     }
 }
