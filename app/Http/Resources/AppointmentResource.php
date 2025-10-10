@@ -15,9 +15,11 @@ class AppointmentResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'master' => new MasterResource($this->master),
-            'service' => new ServiceResource($this->service),
-            'schedule' => new ScheduleResource($this->schedule),
+            'appointment' => [
+                'master' => new MasterResource($this->master),
+                'service' => new ServiceResource($this->service),
+                'schedule' => new ScheduleResource($this->schedule),
+            ]
         ];
     }
 }

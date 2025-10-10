@@ -13,7 +13,7 @@ class AppointmentPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->role->slug === "client" || $user->role->slug === 'master';
     }
 
     /**
@@ -30,7 +30,7 @@ class AppointmentPolicy
      */
     public function create(User $user): bool
     {
-        return $user->role->slug === "client";
+        return $user->role->slug === "client" || $user->role->slug === 'master';
     }
 
     /**

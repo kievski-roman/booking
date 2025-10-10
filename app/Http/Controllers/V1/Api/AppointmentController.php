@@ -10,13 +10,19 @@ use App\Models\Schedule;
 use App\Models\Service;
 use Illuminate\Support\Facades\DB;
 
-
-
 class AppointmentController extends Controller
 {
-    //
+    public function index()
+    {
+        $this->authorize('viewAny', Appointment::class);
+        $appointments = Appointment::paginate(10);
+        return
+            AppointmentResource::collection($appointments);
+    }
+
     public function store(AppointmentRequest $request)
     {
+        $this->authorize('create', Appointment::class);
         $data = $request->validated();
         $user = $request->user();
         $appointment = DB::transaction(function () use ($data, $request, $user) {
@@ -44,11 +50,11 @@ class AppointmentController extends Controller
             return $appointment;
         });
         return response()->json([
-        'id' => $appointment->id,
-        'status' => $appointment->status,
-        'info' => new AppointmentResource($appointment),
-        'notes' => $appointment->notes,
-    ], 201);
+            'id' => $appointment->id,
+            'status' => $appointment->status,
+            'info' => new AppointmentResource($appointment),
+            'notes' => $appointment->notes,
+        ], 201);
 
     }
 }

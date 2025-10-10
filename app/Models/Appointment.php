@@ -3,12 +3,16 @@
 namespace App\Models;
 
 use App\Policies\AppointmentPolicy;
-use App\Policies\UserPolicy;
+use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 
 class Appointment extends Model
 {
+    use HasApiTokens;
+
     protected $table = 'appointments';
 
     protected $fillable = [
