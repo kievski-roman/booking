@@ -8,6 +8,9 @@ use App\Http\Resources\AppointmentResource;
 use App\Models\Appointment;
 use App\Models\Schedule;
 use App\Models\Service;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class AppointmentController extends Controller
@@ -15,13 +18,16 @@ class AppointmentController extends Controller
     public function index()
     {
         $this->authorize('viewAny', Appointment::class);
-        $appointments = Appointment::paginate(10);
+        $appointments = Appointment::with('schedule')->paginate(10);
         return
             AppointmentResource::collection($appointments);
     }
+
     public function show(Appointment $appointment)
     {
-
+        $this->authorize('view', $appointment);
+        $appointment->load('master', 'service', 'schedule');
+        return new AppointmentResource($appointment);
     }
 
     public function store(AppointmentRequest $request)
@@ -54,6 +60,42 @@ class AppointmentController extends Controller
             return $appointment;
         });
         return new AppointmentResource($appointment);
+
+    }
+
+    public function update(Request $request, Appointment $appointment)
+    {
+        $user = $request->user();
+        $this->authorize('update', $appointment);
+        $allowedStatuses = $user->role->slug === 'master' ? ['cancelled', 'confirmed'] : ['cancelled'];
+        $data = $request->validate([
+            'status' => ['required', 'in:' . implode(',', $allowedStatuses)],
+        ]);
+
+
+        if ($data['status'] === 'cancelled') {
+            $hoursBefore = $user->role->slug === 'master' ? 10 : 24;
+            if (Carbon::now()->diffInHours($appointment->appointment_time, false) < $hoursBefore) {
+                $errorMsg = $user->role->slug === 'master'
+                    ? 'Отмена возможна только за 10 часов до начала записи'
+                    : 'Отмена возможна только за 24 часа до начала записи';
+                return response()->json(['error' => $errorMsg], 403);
+            }
+        }
+
+        if ($data['status'] === 'confirmed' && Carbon::now()->diffInHours($appointment->appointment_time, false) < 1) {
+            return response()->json(['error' => 'Подтверждение невозможно за час до начала записи'], 403);
+        }
+        $appointment->update([
+            'status' => $data['status'],
+        ]);
+        return new AppointmentResource($appointment);
+
+    }
+
+    public function destroy(Appointment $appointment)
+    {
+        $this->authorize('delete', $appointment);
 
     }
 }

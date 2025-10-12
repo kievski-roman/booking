@@ -18,6 +18,6 @@
     </head>
     <body class="font-sans antialiased">
         @inertia
-    <h1>FFFFF</h1>
+    <h1>ggggggggggggggg</h1>
     </body>
 </html>

@@ -75,4 +75,14 @@ class UserController extends Controller
 
         return response()->json(['message' => 'Logged out.']);
     }
+
+    public function destroy(User $user){
+        $this->authorize('delete', $user);
+        if(!$user->master()){
+            $user->master()->delete();
+        }
+        $user->delete();
+
+        return response()->json(['success ' => true ], 204);
+    }
 }

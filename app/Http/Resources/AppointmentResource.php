@@ -18,9 +18,9 @@ class AppointmentResource extends JsonResource
             'appointment' => [
                 'status' => $this->status,
                 'notes' => $this->notes,
-                'master' => new MasterResource($this->master),
-                'service' => new ServiceResource($this->service),
-                'schedule' => new ScheduleResource($this->schedule),
+                'master' => MasterResource::make($this->whenLoaded('master')),
+                'service' => ServiceResource::make($this->whenLoaded('service')),
+                'schedule' => ScheduleResource::make($this->whenLoaded('schedule')),
             ]
         ];
     }

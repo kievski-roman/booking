@@ -13,13 +13,22 @@ Route::prefix('v1')->group(function () {
     Route::post('/login', [UserController::class, 'login'])->name('login');
 
     Route::middleware('auth:sanctum')->group(callback: function () {
+
+        Route::prefix('admin')->group(function () {
+            Route::get('/profiles', [ProfileController::class, 'index']);
+            Route::delete('/users/{user}', [UserController::class, 'destroy']);
+        });
+
         Route::get('/profile', [ProfileController::class, 'show']);
+        Route::post('/profile', [ProfileController::class, 'update']);
         Route::post('/logout', [UserController::class, 'logout']);
 
 
         Route::get('/masters', [MasterController::class, 'index']);
         Route::get('/masters/{master}', [MasterController::class, 'show']);
 
+        Route::get('/services', [ServiceController::class, 'index']);
+        Route::get('/services/{service}', [ServiceController::class, 'show']);
         Route::post('/services', [ServiceController::class, 'store']);
         Route::put('/services/{service}', [ServiceController::class, 'update']);
         Route::delete('/services/{service}', [ServiceController::class, 'destroy']);
@@ -29,8 +38,9 @@ Route::prefix('v1')->group(function () {
         Route::delete('/schedules/{schedule}', [ScheduleController::class, 'destroy']);
 
         Route::get('/appointments', [AppointmentController::class, 'index']);
+        Route::get('/appointments/{appointment}', [AppointmentController::class, 'show']);
         Route::post('/appointments', [AppointmentController::class, 'store']);
-        Route::put('/appointments/{appointment}', [AppointmentController::class, 'update']);
-        Route::delete('/appointments/{appointment}', [AppointmentController::class, 'destroy']);
+
+        Route::patch('/appointments/{appointment}', [AppointmentController::class, 'update']);
     });
 });
