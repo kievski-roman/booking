@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Role;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -35,6 +36,39 @@ class UserFactory extends Factory
     /**
      * Indicate that the model's email address should be unverified.
      */
+    public function asAdmin(): static
+    {
+        return $this->state(function () {
+            $role = Role::firstOrCreate(
+                ['slug' => 'admin'],
+                ['name' => 'Administrator']
+            );
+            return ['role_id' => $role->id];
+        });
+    }
+    public function asMaster(): static
+    {
+        return $this->state(function () {
+            $role = Role::firstOrCreate(
+                ['slug' => 'master'],
+                ['name' => 'Master']
+            );
+            return ['role_id' => $role->id];
+        });
+    }
+
+    public function asClient(): static
+    {
+        return $this->state(function () {
+            $role = Role::firstOrCreate(
+                ['slug' => 'client'],
+                ['name' => 'Client']
+            );
+            return ['role_id' => $role->id];
+        });
+    }
+
+
     public function unverified(): static
     {
         return $this->state(fn (array $attributes) => [

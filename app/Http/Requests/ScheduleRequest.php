@@ -25,6 +25,7 @@ class ScheduleRequest extends FormRequest
             'date' => 'required|date|date_format:Y-m-d',
             'start_time' => 'required|date_format:H:i',
             'end_time' => 'required|date_format:H:i|after:start_time',
+            'master_id' => 'prohibited',
         ];
     }
 }

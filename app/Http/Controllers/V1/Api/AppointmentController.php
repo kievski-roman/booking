@@ -15,12 +15,19 @@ use Illuminate\Support\Facades\DB;
 
 class AppointmentController extends Controller
 {
-    public function index()
+    public function index( Request $request)
     {
+
         $this->authorize('viewAny', Appointment::class);
-        $appointments = Appointment::with('schedule')->paginate(10);
+        $user = $request->user();
+        $query = Appointment::query()->with(['schedule', 'service','master']);
+        if($user->role->slug === "client"){
+            $query->where('client_id', $user->id);
+        }elseif ($user->role->slug === "master") {
+            $query->where('master_id', $user->id);
+        }
         return
-            AppointmentResource::collection($appointments);
+            AppointmentResource::collection($query->paginate(10));
     }
 
     public function show(Appointment $appointment)

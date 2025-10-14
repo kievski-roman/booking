@@ -16,6 +16,7 @@ class ScheduleResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'master_id' => $this->master_id,
             'date' => $this->date,
             'start_time' => $this->start_time,
             'end_time' => $this->end_time,

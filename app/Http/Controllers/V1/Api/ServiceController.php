@@ -46,7 +46,7 @@ class ServiceController extends Controller
         return response()->json([
             'success' => true,
             'service' => new ServiceResource($service),
-        ]);
+        ])->setStatusCode(201);
     }
 
     public function update(ServiceRequest $request, Service $service)
