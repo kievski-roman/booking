@@ -25,7 +25,6 @@ class ServiceRequest extends FormRequest
             'name' => 'required|string|max:255',
             'description' => 'required|string|max:1000',
             'price' => 'required|integer|min:0',
-            'master_id' => $this->isMethod('post') ? 'required|exists:masters,id' : 'nullable|exists:masters,id',
         ];
     }
 }

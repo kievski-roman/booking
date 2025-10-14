@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Policies\AppointmentPolicy;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -11,7 +12,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class Appointment extends Model
 {
-    use HasApiTokens;
+    use HasApiTokens, HasFactory;
 
     protected $table = 'appointments';
 

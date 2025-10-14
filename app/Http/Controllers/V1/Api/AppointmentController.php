@@ -35,24 +35,32 @@ class AppointmentController extends Controller
         $this->authorize('create', Appointment::class);
         $data = $request->validated();
         $user = $request->user();
-        $appointment = DB::transaction(function () use ($data, $request, $user) {
+        $appointment = DB::transaction(function () use ($data, $user) {
 
-
-            $schedule = Schedule::where('id', $data['schedule_id'])->firstOrFail();
-            if (!$schedule->is_available) {
-                throw new \Exception('Schedule not available', 400);
+            $service = Service::query()->findOrFail($data['service_id']);
+            if ($service->master_id !== $data['master_id']) {
+                abort(422, 'Service does not belong to this master');
             }
-            if (!Service::where('id', $data['service_id'])->where('master_id', $data['master_id'])->exists()) {
-                throw new \Exception('Service does not belong to this master', 400);
+
+            $schedule = Schedule::query()
+                ->whereKey($data['schedule_id'])
+                ->where('master_id', $data['master_id'])
+                ->lockForUpdate()
+                ->first();
+            if (!$schedule) {
+                abort(422, 'Schedule not found for this master');
+            }
+            if (!$schedule->is_available) {
+                abort(409, 'Schedule not available');
             }
             $appointment = Appointment::create([
-                'status' => $data['status'],
-                'notes' => $data['notes'],
+                'notes' => $data['notes'] ?? null,
                 'client_id' => $user->id,
                 'master_id' => $data['master_id'],
                 'service_id' => $data['service_id'],
                 'schedule_id' => $data['schedule_id'],
                 'appointment_time' => $schedule->start_time,
+                'status' => 'pending',
             ]);
 
             $schedule->update(['is_available' => false]);

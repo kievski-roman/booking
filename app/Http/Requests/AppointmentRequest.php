@@ -22,7 +22,6 @@ class AppointmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'status' => 'required|in:pending, confirmed,completed, cancelled',
             'notes' => 'nullable|string',
             'master_id' => 'required|exists:masters,id',
             'service_id' => 'required|exists:services,id',

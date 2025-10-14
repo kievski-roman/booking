@@ -9,6 +9,7 @@ use App\Http\Controllers\V1\Api\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
+    Route::get('/health', fn () => response()->json(['ok' => true]));
     Route::post('/register', [UserController::class, 'register'])->name('register');
     Route::post('/login', [UserController::class, 'login'])->name('login');
 

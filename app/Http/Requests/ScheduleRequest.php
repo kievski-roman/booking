@@ -22,7 +22,6 @@ class ScheduleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'master_id' => 'required|integer|exists:masters,id',
             'date' => 'required|date|date_format:Y-m-d',
             'start_time' => 'required|date_format:H:i',
             'end_time' => 'required|date_format:H:i|after:start_time',

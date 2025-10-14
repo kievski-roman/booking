@@ -4,12 +4,13 @@ namespace App\Models;
 
 use App\Policies\MasterPolicy;
 use App\Policies\UserPolicy;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Sanctum\HasApiTokens;
 
 class Master extends Model
 {
-    use HasApiTokens;
+    use HasApiTokens, HasFactory;
     protected $table = 'masters';
 
     protected $fillable = [
