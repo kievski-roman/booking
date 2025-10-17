@@ -38,7 +38,7 @@ class MasterPolicy
      */
     public function update(User $user, Master $master): bool
     {
-        return false;
+        return  $user->role->slug === "master" && $master->master_id === $user->master->id;
     }
 
     /**

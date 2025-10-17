@@ -24,7 +24,7 @@ class SchedulesTest extends TestCase
         $this->withToken($m->createToken('api')->plainTextToken)
             ->postJson('/api/v1/schedules', $payload)
             ->assertCreated()
-            ->assertJsonPath('schedule.master_id', $m->master->id);
+            ->assertJsonPath('data.master_id', $m->master->id);
 
         $this->assertDatabaseHas('schedules', [
             'master_id' => $m->master->id,

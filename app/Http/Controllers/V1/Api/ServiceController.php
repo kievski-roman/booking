@@ -29,48 +29,21 @@ class ServiceController extends Controller
     public function store(ServiceRequest $request)
     {
         $this->authorize('create', Service::class);
-        $data = $request->validated();
-        $user = $request->user();
-        $master = $user->master;
-        if (! $master) {
-            return response()->json(['error' => 'Master profile not found'], 404);
-        }
 
-        $service = Service::create([
-            'name' => $data['name'],
-            'description' => $data['description'],
-            'price' => $data['price'],
-            'master_id' => $master->id,
-        ]);
+        $master = $request->user()->master()->firstOrFail();
 
-        return response()->json([
-            'success' => true,
-            'service' => new ServiceResource($service),
-        ])->setStatusCode(201);
+        $service = $master->services()->create($request->validated());
+
+        return (new ServiceResource($service))->response()->setStatusCode(201);
     }
 
     public function update(ServiceRequest $request, Service $service)
     {
         $this->authorize('update', $service);
-        $data = $request->validated();
-        $user = $request->user();
-        $master = $user->master;
-        if (! $master) {
-            return response()->json(['error' => 'Master profile not found'], 404);
-        }
-        if ($service->master_id !== $master->id) {
-            return response()->json(['error' => 'Unauthorized to update this service'], 403);
-        }
-        $service->update([
-            'name' => $data['name'],
-            'description' => $data['description'],
-            'price' => $data['price'],
-        ]);
 
-        return response()->json([
-            'success' => true,
-            'service' => new ServiceResource($service),
-        ]);
+        $service->update($request->validated());
+
+        return (new ServiceResource($service->refresh()))->response();
     }
 
     public function destroy(Service $service)

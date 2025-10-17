@@ -115,7 +115,7 @@ class ServicesCrudTest extends TestCase
             ]);
 
         $res->assertCreated()
-            ->assertJsonStructure(['success','service'=>['id','name','price']]);
+            ->assertJsonStructure(['data'=>['id','name','price']]);
 
         $this->assertDatabaseHas('services', [
             'name' => 'Haircut',
@@ -147,7 +147,7 @@ class ServicesCrudTest extends TestCase
                 'price' => 12,
             ])
             ->assertOk()
-            ->assertJsonPath('service.name', 'New');
+            ->assertJsonPath('data.name', 'New');
 
         $this->assertDatabaseHas('services', [
             'id' => $s->id,

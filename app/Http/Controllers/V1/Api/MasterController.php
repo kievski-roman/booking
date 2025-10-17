@@ -16,9 +16,7 @@ class MasterController extends Controller
         $this->authorize('viewAny', Master::class);
         $masters = Master::with('services')->paginate(10);
 
-        return response()->json([
-            'masters' => MasterResource::collection($masters),
-        ]);
+        return MasterResource::collection($masters);
     }
 
     public function show(Master $master)

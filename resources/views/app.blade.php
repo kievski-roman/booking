@@ -17,6 +17,8 @@
 </head>
 <body class="font-sans antialiased">
 @inertia
-<h1></h1>
+
+
+<h1>ввв</h1>
 </body>
 </html>

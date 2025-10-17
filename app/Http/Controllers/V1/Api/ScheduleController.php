@@ -28,42 +28,21 @@ class ScheduleController extends Controller
     public function store(ScheduleRequest $request)
     {
         $this->authorize('create', Schedule::class);
-        $data = $request->validated();
-        $user = $request->user();
-        $master = $user->master;
-        if (!$master) {
-            return response(['error' => 'Master id not found'], 404);
-        }
-        if ($user->role->slug === 'master') {
-            $schedule = Schedule::create([
-                'master_id' => $master->id,
-                'date' => $data['date'],
-                'start_time' => $data['start_time'],
-                'end_time' => $data['end_time'],
-                'is_available' => true,
-            ]);
-        }
 
-        return response()->json([
-            'schedule' => new ScheduleResource($schedule),
-        ])->setStatusCode(201);
+        $master = $request->user()->master()->firstOrFail();
+
+        $schedule = $master->schedules()->create($request->validated());
+
+        return (new ScheduleResource($schedule))->response()->setStatusCode(201);
     }
 
     public function update(ScheduleRequest $request, Schedule $schedule)
     {
         $this->authorize('update', $schedule);
-        $data = $request->validated();
 
-        $schedule->update([
-            'date' => $data['date'],
-            'start_time' => $data['start_time'],
-            'end_time' => $data['end_time'],
-            'is_available' => true,
-        ]);
+        $schedule->update($request->validated());
 
-        return response()->json([
-            'schedule' => new ScheduleResource($schedule),
-        ]);
+        return (new ScheduleResource($schedule->refresh()))->response();
     }
 
     public function destroy(Schedule $schedule)

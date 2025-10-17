@@ -10,7 +10,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
     Route::get('/health', fn () => response()->json(['ok' => true]));
-    Route::post('/register', [UserController::class, 'register'])->name('register');
+    Route::post('/register-client', [UserController::class, 'registerClient'])->name('registerClient');
+    Route::post('/register-master', [UserController::class, 'registerMaster'])->name('registerMaster');
     Route::post('/login', [UserController::class, 'login'])->name('login');
 
     Route::middleware('auth:sanctum')->group(callback: function () {
@@ -21,7 +22,8 @@ Route::prefix('v1')->group(function () {
         });
 
         Route::get('/profile', [ProfileController::class, 'show']);
-        Route::post('/profile', [ProfileController::class, 'update']);
+        Route::patch('/profile', [ProfileController::class, 'updateUser']);
+        Route::patch('/profile/master', [ProfileController::class, 'updateMaster']);
         Route::post('/logout', [UserController::class, 'logout']);
 
 
