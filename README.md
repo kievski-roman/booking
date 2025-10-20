@@ -1,22 +1,37 @@
-# Booking API (Laravel 12, RESTful Backend)
+# 🧾 Booking API (Laravel 12 · RESTful Backend)
 
-A role-based booking and CRM backend built with **Laravel 12**, **MySQL**, and **Sanctum** authentication.  
-Designed as an **API-first** application running in a **Docker / Laravel Sail** environment.
+A **role-based booking & CRM API** built with **Laravel 12**, **MySQL**, and **Sanctum** authentication.  
+Designed as an **API-first** backend running in a **Docker / Laravel Sail** environment.
 
-> **Stack:** PHP 8.x · Laravel 12 · MySQL · Sanctum · Docker (Compose/Sail) · PHPUnit
+> ⚙️ **Stack:** PHP 8.x · Laravel 12 · MySQL · Sanctum · Docker (Compose/Sail) · PHPUnit  
 
 ---
 
 ## ✨ Features
 
-- 🔐 Authentication & Authorization using Laravel Sanctum
-- 👥 User Roles: **Admin**, **Master**, **Client**
-- 📅 Appointment, Schedule & Service management (CRUD endpoints)
-- 👤 Profile and User management
-- 🧾 Request validation (FormRequest) & resource controllers
-- 🌱 Database seeding with factories
-- 🧪 Unit & feature tests (PHPUnit)
-- 🐳 Docker-based development stack (MySQL + PHP + Nginx)
+- 🔐 Authentication & Authorization with Laravel Sanctum  
+- 👥 Role System: **Admin**, **Master**, **Client**  
+- 📅 Appointment, Schedule & Service management (CRUD endpoints)  
+- 👤 Profile & User management  
+- 🧾 Request validation (FormRequest) & Resource Controllers  
+- 🌱 Database seeding with factories  
+- 🧪 Unit & Feature testing with PHPUnit  
+- 🐳 Dockerized stack (MySQL + PHP + Nginx)
+
+---
+
+## 📘 API Documentation
+
+🔗 **[View full interactive documentation on Postman →](https://documenter.getpostman.com/view/45661278/2sB3QNqogu)**  
+
+The documentation includes:
+- All endpoints grouped by module (Auth, Profile, Masters, Services, etc.)
+- Example requests and responses  
+- Role-based permissions  
+- Validation rules and error responses  
+- Authentication & usage notes  
+
+> _Auto-generated and maintained through a live Postman Collection._
 
 ---
 
@@ -89,77 +104,3 @@ docker compose up -d --build
 docker compose exec app composer install
 docker compose exec app php artisan key:generate
 docker compose exec app php artisan migrate --seed
-```
-
-### ⚙️ Option B – Laravel Sail
-```bash
-cp .env.example .env
-composer install
-php artisan key:generate
-./vendor/bin/sail up -d
-./vendor/bin/sail artisan migrate --seed
-```
-
----
-
-## ⚙️ Example `.env` Configuration
-
-```env
-APP_NAME=Laravel
-APP_ENV=local
-APP_KEY=
-APP_DEBUG=true
-APP_URL=http://localhost
-
-LOG_CHANNEL=stack
-LOG_LEVEL=debug
-
-DB_CONNECTION=mysql
-DB_HOST=mysql
-DB_PORT=3306
-DB_DATABASE=booking
-DB_USERNAME=sail
-DB_PASSWORD=password
-
-SESSION_DRIVER=database
-SESSION_DOMAIN=localhost
-SESSION_LIFETIME=120
-SESSION_SECURE_COOKIE=false
-
-SANCTUM_STATEFUL_DOMAINS=localhost:5173,127.0.0.1:5173
-
-CACHE_STORE=database
-QUEUE_CONNECTION=database
-FILESYSTEM_DISK=local
-
-MAIL_MAILER=log
-MAIL_FROM_ADDRESS="hello@example.com"
-MAIL_FROM_NAME="${APP_NAME}"
-
-VITE_APP_NAME="${APP_NAME}"
-```
-
----
-
-## 🔐 Authentication
-
-After a successful login, use the returned token in your requests:
-
-```
-Authorization: Bearer <your_token>
-Accept: application/json
-```
-
----
-
-## 🧪 Testing
-
-```bash
-docker compose exec app php artisan test
-# or
-./vendor/bin/sail artisan test
-```
-
----
-
-
