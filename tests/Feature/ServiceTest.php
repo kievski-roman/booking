@@ -33,7 +33,7 @@ class ServicesCrudTest extends TestCase
         Service::factory()->count(3)->create(['master_id' => $m2->master->id, 'name' => 'm2-x']);
 
         $res = $this->withToken($m1->createToken('api')->plainTextToken)
-            ->getJson('/api/v1/services');
+            ->getJson('/api/v1/me/master/services/');
 
         $res->assertOk()
             ->assertJsonStructure(['data','links','meta'])
@@ -48,7 +48,7 @@ class ServicesCrudTest extends TestCase
         $client = $this->makeClientUser();
 
         $this->withToken($client->createToken('api')->plainTextToken)
-            ->getJson('/api/v1/services')
+            ->getJson('/api/v1/me/master/services/')
             ->assertStatus(403);
     }
 
@@ -60,7 +60,7 @@ class ServicesCrudTest extends TestCase
         $s = Service::factory()->create(['master_id' => $m->master->id, 'name' => 'own']);
 
         $this->withToken($m->createToken('api')->plainTextToken)
-            ->getJson("/api/v1/services/{$s->id}")
+            ->getJson("/api/v1/me/master/services/{$s->id}")
             ->assertOk()
             ->assertJsonPath('data.id', $s->id)
             ->assertJsonPath('data.name', 'own');
@@ -73,7 +73,7 @@ class ServicesCrudTest extends TestCase
         $s2 = Service::factory()->create(['master_id' => $m2->master->id]);
 
         $this->withToken($m1->createToken('api')->plainTextToken)
-            ->getJson("/api/v1/services/{$s2->id}")
+            ->getJson("/api/v1/me/master/services/{$s2->id}")
             ->assertStatus(403);
     }
 
@@ -84,7 +84,7 @@ class ServicesCrudTest extends TestCase
         $m = $this->makeMasterUser();
 
         $this->withToken($m->createToken('api')->plainTextToken)
-            ->postJson('/api/v1/services', [])
+            ->postJson('/api/v1/me/master/services/', [])
             ->assertStatus(422)
             ->assertJsonValidationErrors(['name','description','price']);
     }
@@ -94,7 +94,7 @@ class ServicesCrudTest extends TestCase
         $m = $this->makeMasterUser();
 
         $this->withToken($m->createToken('api')->plainTextToken)
-            ->postJson('/api/v1/services', [
+            ->postJson('/api/v1/me/master/services/', [
                 'name' => 'Cut',
                 'description' => 'desc',
                 'price' => 10,
@@ -108,7 +108,7 @@ class ServicesCrudTest extends TestCase
         $m = $this->makeMasterUser();
 
         $res = $this->withToken($m->createToken('api')->plainTextToken)
-            ->postJson('/api/v1/services', [
+            ->postJson('/api/v1/me/master/services/', [
                 'name' => 'Haircut',
                 'description' => 'Simple cut',
                 'price' => 30,
@@ -128,7 +128,7 @@ class ServicesCrudTest extends TestCase
         $client = $this->makeClientUser();
 
         $this->withToken($client->createToken('api')->plainTextToken)
-            ->postJson('/api/v1/services', [
+            ->postJson('/api/v1/me/master/services/', [
                 'name' => 'X', 'description' => 'd', 'price' => 10
             ])->assertStatus(403);
     }
@@ -141,7 +141,7 @@ class ServicesCrudTest extends TestCase
         $s = Service::factory()->create(['master_id' => $m->master->id, 'name' => 'Old', 'price' => 10]);
 
         $this->withToken($m->createToken('api')->plainTextToken)
-            ->putJson("/api/v1/services/{$s->id}", [
+            ->putJson("/api/v1/me/master/services/{$s->id}", [
                 'name' => 'New',
                 'description' => 'updated',
                 'price' => 12,
@@ -163,7 +163,7 @@ class ServicesCrudTest extends TestCase
         $s2 = Service::factory()->create(['master_id' => $m2->master->id, 'name' => 'B']);
 
         $this->withToken($m1->createToken('api')->plainTextToken)
-            ->putJson("/api/v1/services/{$s2->id}", [
+            ->putJson("/api/v1/me/master/services/{$s2->id}", [
                 'name' => 'Hack', 'description' => 'x', 'price' => 99
             ])->assertStatus(403);
     }
@@ -174,7 +174,7 @@ class ServicesCrudTest extends TestCase
         $s = Service::factory()->create(['master_id' => $m->master->id]);
 
         $this->withToken($m->createToken('api')->plainTextToken)
-            ->putJson("/api/v1/services/{$s->id}", [
+            ->putJson("/api/v1/me/master/services/{$s->id}", [
                 'name' => '',
                 'description' => '',
                 'price' => -5,
@@ -191,7 +191,7 @@ class ServicesCrudTest extends TestCase
         $s = Service::factory()->create(['master_id' => $m->master->id]);
 
         $this->withToken($m->createToken('api')->plainTextToken)
-            ->deleteJson("/api/v1/services/{$s->id}")
+            ->deleteJson("/api/v1/me/master/services/{$s->id}")
             ->assertNoContent();
 
         $this->assertDatabaseMissing('services', ['id' => $s->id]);
@@ -204,7 +204,7 @@ class ServicesCrudTest extends TestCase
         $s2 = Service::factory()->create(['master_id' => $m2->master->id]);
 
         $this->withToken($m1->createToken('api')->plainTextToken)
-            ->deleteJson("/api/v1/services/{$s2->id}")
+            ->deleteJson("/api/v1/me/master/services/{$s2->id}")
             ->assertStatus(403);
 
         $this->assertDatabaseHas('services', ['id' => $s2->id]);

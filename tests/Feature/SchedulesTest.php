@@ -22,7 +22,7 @@ class SchedulesTest extends TestCase
         ];
 
         $this->withToken($m->createToken('api')->plainTextToken)
-            ->postJson('/api/v1/schedules', $payload)
+            ->postJson('/api/v1/me/master/schedules', $payload)
             ->assertCreated()
             ->assertJsonPath('data.master_id', $m->master->id);
 
@@ -37,7 +37,7 @@ class SchedulesTest extends TestCase
         $c = User::factory()->asClient()->create();
 
         $this->withToken($c->createToken('api')->plainTextToken)
-            ->postJson('/api/v1/schedules', [
+            ->postJson('/api/v1/me/master/schedules', [
                 'date' => now()->addDay()->toDateString(),
                 'start_time' => '10:00',
                 'end_time' => '11:00',
