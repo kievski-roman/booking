@@ -13,7 +13,7 @@ class AuthTest extends TestCase
 
     public function test_protected_route_requires_token(): void
     {
-        $this->getJson('/api/v1/appointments')->assertStatus(401);
+        $this->getJson('api/v1/me/appointments')->assertStatus(401);
     }
 
     public function test_login_returns_token_and_user(): void

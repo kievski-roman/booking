@@ -23,9 +23,12 @@ class AppointmentRequest extends FormRequest
     {
         return [
             'notes' => 'nullable|string',
-            'master_id' => 'required|exists:masters,id',
             'service_id' => 'required|exists:services,id',
             'schedule_id' => 'required|exists:schedules,id',
+            'client_id' => 'prohibited',
+            'master_id' => 'prohibited',
+            'status' => 'prohibited',
+            'appointment_time' => 'prohibited',
         ];
     }
 }
