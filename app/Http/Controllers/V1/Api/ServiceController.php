@@ -21,18 +21,21 @@ class ServiceController extends Controller
         $services = $user->master->services()->paginate(10);
         return ServiceResource::collection($services);
     }
+
     public function show(Service $service)
     {
         $this->authorize('view', $service);
         return new ServiceResource($service);
     }
+
     public function store(ServiceRequest $request)
     {
+        $data = $request->validated();
         $this->authorize('create', Service::class);
 
         $master = $request->user()->master()->firstOrFail();
 
-        $service = $master->services()->create($request->validated());
+        $service = $master->services()->create($data);
 
         return (new ServiceResource($service))->response()->setStatusCode(201);
     }

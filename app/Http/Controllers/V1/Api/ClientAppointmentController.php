@@ -14,13 +14,7 @@ use Illuminate\Support\Facades\DB;
 
 class ClientAppointmentController extends Controller
 {
-    public $service;
-
-    public function __construct(AppointmentService $service)
-    {
-        $this->service = $service;
-    }
-
+    public function __construct(private AppointmentService $service) {}
     public function index(Request $request)
     {
         $this->authorize('viewAny', Appointment::class);
@@ -52,14 +46,23 @@ class ClientAppointmentController extends Controller
             ->response()
             ->setStatusCode(201);
     }
-    public function cancel(Appointment $appointment, Request $request)
+    public function cancel(Request $request, Appointment $appointment)
     {
         $this->authorize('cancel', $appointment);
-        $request->validate(['status' => 'prohibited']);
-        $appointment->update([
-            'status' => 'cancelled'
+
+        $request->validate([
+            'status' => 'prohibited',
+            'notes'  => 'prohibited',
         ]);
-        return new AppointmentResource($appointment
-            ->with(['schedule', 'service', 'master']));
+
+        $tooLate = now()->gt($appointment->appointment_time->copy()->subHours(24));
+        if ($tooLate) {
+            return response()->json([
+                'error' => 'Отмена возможна только за 24 часа до начала записи',
+            ], 403);
+        }
+        $this->service->cancel($appointment);
+
+        return new AppointmentResource($appointment->fresh()->load(['schedule','service','master']));
     }
 }

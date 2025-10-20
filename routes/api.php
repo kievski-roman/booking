@@ -55,7 +55,7 @@ Route::prefix('v1')->group(function () {
 
                 Route::apiResource('schedules', ScheduleController::class);
 
-                Route::apiResource('services', ScheduleController::class);
+                Route::apiResource('services', ServiceController::class);
             });
         });
 
